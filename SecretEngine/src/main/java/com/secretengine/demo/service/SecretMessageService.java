@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.secretengine.demo.controller.EncodeAndDecode;
+import com.secretengine.demo.EncodeAndDecode;
 import com.secretengine.demo.entity.SecretMessage;
 import com.secretengine.demo.repository.SecretMessageRepo;
 
@@ -42,7 +42,7 @@ public class SecretMessageService {
 	}
 
 	public SecretMessage decode(SecretMessage secretMessage) {
-		secretMessage.setMessage(encodeAndDecode.decode(secretMessage.getMessage()));
+		secretMessage.setMessage(encodeAndDecode.decode(secretMessage.getMessage(),2));
 		return secretMessage;
 	}
 

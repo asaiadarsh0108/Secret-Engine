@@ -13,7 +13,7 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.secretengine.demo.controller.EncodeAndDecode;
+import com.secretengine.demo.EncodeAndDecode;
 import com.secretengine.demo.entity.User;
 import com.secretengine.demo.repository.UserRepository;
 

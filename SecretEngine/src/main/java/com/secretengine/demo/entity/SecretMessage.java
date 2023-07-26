@@ -6,13 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-import com.secretengine.demo.controller.EncodeAndDecode;
+import com.secretengine.demo.EncodeAndDecode;
 
 @Entity
 public class SecretMessage {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	private String name;
@@ -21,7 +21,7 @@ public class SecretMessage {
 	
 	@OneToOne
 	private User user;
-
+	
 	public User getUser() {
 		return user;
 	}

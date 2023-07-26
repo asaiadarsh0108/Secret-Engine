@@ -1,4 +1,4 @@
-package com.secretengine.demo.controller;
+package com.secretengine.demo;
 
 import org.springframework.stereotype.Component;
 
@@ -6,24 +6,24 @@ import org.springframework.stereotype.Component;
 public class EncodeAndDecode {
 	
 	@SuppressWarnings("null")
-	public StringBuffer encode(StringBuffer stringBuffer) {
+	public StringBuffer encode(StringBuffer stringBuffer, int key) {
 		StringBuffer str= new StringBuffer();
 		for(int i=0;i<stringBuffer.length();i++) {
 			char c = stringBuffer.charAt(i);
 			int ascii=c;
-			ascii = ascii+1;
+			ascii = ascii+key;
 			char encry = (char)ascii;
 			str.append(encry);
 		}
 		return str;
 	}
 	@SuppressWarnings("null")
-	public StringBuffer decode(StringBuffer stringBuffer) {
+	public StringBuffer decode(StringBuffer stringBuffer,int key) {
 		StringBuffer str=new StringBuffer();
 		for(int i=0;i<stringBuffer.length();i++) {
 			char c = stringBuffer.charAt(i);
 			int ascii=c;
-			ascii = ascii-1;
+			ascii = ascii-key;
 			char encry = (char)ascii;
 			str.append(encry);
 		}
