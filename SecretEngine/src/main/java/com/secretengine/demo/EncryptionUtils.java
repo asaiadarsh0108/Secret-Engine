@@ -11,7 +11,7 @@ import java.util.Base64;
 public class EncryptionUtils {
 
     private static final String ENCRYPTION_ALGORITHM = "AES";
-    private static final String ENCRYPTION_KEY = "256";
+    private static final String ENCRYPTION_KEY = "0123456789abcdef0123456789abcdef";
 
     public String encrypt(String plainText) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), ENCRYPTION_ALGORITHM);
@@ -28,6 +28,18 @@ public class EncryptionUtils {
         byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
         return new String(decryptedBytes);
+    }
+    
+    public static byte[] decryptFile(byte[] encryptedData) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            SecretKeySpec secretKey = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), "AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return cipher.doFinal(encryptedData);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
 

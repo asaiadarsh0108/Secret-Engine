@@ -1,5 +1,6 @@
 package com.secretengine.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.secretengine.demo.entity.Records;
 import com.secretengine.demo.entity.SecretMessage;
 import com.secretengine.demo.entity.User;
+import com.secretengine.demo.service.RecordsService;
 import com.secretengine.demo.service.ResourceNotFoundException;
 import com.secretengine.demo.service.SecretMessageService;
 import com.secretengine.demo.service.UserService;
@@ -31,6 +34,11 @@ public class SecretMessageController {
 		private UserService userService;
 		
 		@Autowired
+		private RecordsService recordsService;
+		
+		private Records records;
+		
+		@Autowired
 		private EncodeAndDecode encodeAndDecode;
 		
 		@PostMapping("/add/{userid}")
@@ -38,6 +46,10 @@ public class SecretMessageController {
 			try {
 				User user=userService.getById(userid);
 				secretMessage.setUser(user);
+				records.setCreatedBy(user.getUsername());
+				records.setFilename(secretMessage.getName());
+				records.setTime(LocalDateTime.now());
+				recordsService.save(records);
 			} catch (ResourceNotFoundException e) {
 				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());
@@ -53,7 +65,6 @@ public class SecretMessageController {
 				userService.getById(userid);
 				 scList =  secretMessageService.getByUserId(userid);
 			} catch (ResourceNotFoundException e) {
-				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());
 			}
 			return scList;

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.secretengine.demo.EncryptionUtils;
+import com.secretengine.demo.PasswordStrength;
 import com.secretengine.demo.entity.User;
 import com.secretengine.demo.repository.UserRepository;
 import com.secretengine.demo.service.ResourceNotFoundException;
@@ -32,7 +33,10 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/login") // by the time we reach here, spring has already verified username/password
+	@Autowired
+	private PasswordStrength passwordStrength;
+	
+	@GetMapping("/login")
 	public UserDetails login(Principal principal) {
 		String username = principal.getName();
 		UserDetails user = userService.loadUserByUsername(username);
@@ -40,8 +44,12 @@ public class UserController {
 	}
 	
 	@PostMapping("/add")
-	public User postManager(@RequestBody User user) {
-		return userService.insert(user);
+	public ResponseEntity<?> postManager(@RequestBody User user) {
+		String passwordStrengthError =passwordStrength.checkPasswordStrength(user.getPassword());
+		if (passwordStrengthError != null) {
+            return new ResponseEntity<>(passwordStrengthError, HttpStatus.BAD_REQUEST);
+        }
+		 return new ResponseEntity<>(userService.insert(user), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/all")
