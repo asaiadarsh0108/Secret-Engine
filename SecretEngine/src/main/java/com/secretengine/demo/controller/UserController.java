@@ -72,6 +72,10 @@ public class UserController {
 	public ResponseEntity<?> update(@PathVariable int id, @RequestBody User user) {
 		try {
 			userService.getById(id);
+			String passwordStrengthError =passwordStrength.checkPasswordStrength(user.getPassword());
+			if (passwordStrengthError != null) {
+	            return new ResponseEntity<>(passwordStrengthError, HttpStatus.BAD_REQUEST);
+	        }
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

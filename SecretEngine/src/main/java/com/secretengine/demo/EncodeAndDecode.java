@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class EncodeAndDecode {
 	
-	@SuppressWarnings("null")
 	public StringBuffer encode(StringBuffer stringBuffer, int key) {
 		StringBuffer str= new StringBuffer();
 		for(int i=0;i<stringBuffer.length();i++) {
@@ -17,7 +16,8 @@ public class EncodeAndDecode {
 		}
 		return str;
 	}
-	@SuppressWarnings("null")
+	
+	
 	public StringBuffer decode(StringBuffer stringBuffer,int key) {
 		StringBuffer str=new StringBuffer();
 		for(int i=0;i<stringBuffer.length();i++) {

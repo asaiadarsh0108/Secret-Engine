@@ -1,12 +1,13 @@
 package com.secretengine.demo.controller;
 
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,11 +47,13 @@ public class SecretMessageController {
 		@Autowired
 		private RecordsService recordsService;
 		
+		@Autowired
 		private Records records;
 		
 		@Autowired
 		private EncodeAndDecode encodeAndDecode;
 		
+		@Autowired
 		private RestTemplate restTemplate;
 		
 		@PostMapping("/add/{userid}")
@@ -60,7 +63,10 @@ public class SecretMessageController {
 				Map<String, Object> dataMap = new HashMap<>();
 		        dataMap.put("filename", secretMessage.getName());
 		        dataMap.put("createdBy", user.getUsername());
-		        dataMap.put("localDateTime", LocalDateTime.now());
+		        LocalDateTime currentDateTime = LocalDateTime.now();
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		        String formattedDateTime = currentDateTime.format(formatter);
+		        dataMap.put("time", formattedDateTime);
 
 		        // Convert 'dataMap' to JSON
 		        ObjectMapper objectMapper = new ObjectMapper();
@@ -77,19 +83,10 @@ public class SecretMessageController {
 		            e.printStackTrace();
 		        }
 				secretMessage.setUser(user);
-//				Records records = new Records();
-//				records.setId(count);
-//				records.setCreatedBy(user.getUsername());
-//				records.setFilename(secretMessage.getName());
-//				records.setTime(LocalDateTime.now());
-//				recordsService.save(user.getUsername(), secretMessage.getName(), LocalDateTime.now());
-				
-//				recordsService.save(records);
-//				count
 			} catch (ResourceNotFoundException e) {
 				System.out.println(e.getMessage());
 			}
-			secretMessage.setMessage(encodeAndDecode.encode(secretMessage.getMessage(),2));
+			secretMessage.setMessage(encodeAndDecode.encode(secretMessage.getMessage(),1));
 			
 			return secretMessageService.insert(secretMessage);
 		}
@@ -124,10 +121,31 @@ public class SecretMessageController {
 		public ResponseEntity<?> update(@PathVariable int id, @RequestBody SecretMessage secretMessage) {
 			try {
 				secretMessageService.getById(id);
+				Map<String, Object> dataMap = new HashMap<>();
+		        dataMap.put("filename", secretMessage.getName());
+		        dataMap.put("createdBy", secretMessage.getUser().getUsername());
+		        LocalDateTime currentDateTime = LocalDateTime.now();
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		        String formattedDateTime = currentDateTime.format(formatter);
+		        dataMap.put("time", formattedDateTime);
+
+		        // Convert 'dataMap' to JSON
+		        ObjectMapper objectMapper = new ObjectMapper();
+		        try {
+		            String jsonData = objectMapper.writeValueAsString(dataMap);
+		            HttpHeaders headers = new HttpHeaders();
+		            headers.setContentType(MediaType.APPLICATION_JSON);
+		            RequestEntity<String> requestEntity = RequestEntity
+			                .post("http://localhost:8080/records/add")
+			                .headers(headers)
+			                .body(jsonData);
+		            ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+		        } catch (JsonProcessingException e) {
+		            e.printStackTrace();
+		        }
 			} catch (ResourceNotFoundException e) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 			}
-			
 			secretMessage.setId(id);
 			return ResponseEntity.status(HttpStatus.OK).body(secretMessageService.insert(secretMessage));
 		}

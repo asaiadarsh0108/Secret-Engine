@@ -1,6 +1,7 @@
 package com.secretengine.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,11 @@ public class RecordsService {
 
 	public Records insert(Records records) {
 		return recordsRepository.save(records);
+	}
+
+	public List<Records> getAll() {
+		// TODO Auto-generated method stub
+		return recordsRepository.findAll();
 	}
 
 }
