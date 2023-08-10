@@ -31,12 +31,25 @@ public class User implements UserDetails {
 	
 	private String password;
 	
+	public User(int id, String username, String password) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+	}
+
+	
+
+	public User() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	private String role;
 
 	public int getId() {
 		return id;
@@ -46,21 +59,13 @@ public class User implements UserDetails {
 		this.id = id;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		SimpleGrantedAuthority sga = new SimpleGrantedAuthority(role);
+		SimpleGrantedAuthority sga = new SimpleGrantedAuthority("user");
 		Collection<GrantedAuthority> list = new ArrayList<>();
 		list.add(sga);
 		return list;
